@@ -33,9 +33,7 @@ class StaticMethodCallableNode extends ExpressionNode
 			$this->name instanceof ExpressionNode => '{' . $this->name->print($context) . '}',
 			default => $this->name,
 		};
-		return PHP_VERSION_ID < 80100
-			? '[' . $this->class->print($context) . ', ' . $context->memberAsString($this->name) . ']'
-			: $context->dereferenceExpr($this->class) . '::' . $name . '(...)';
+		return $context->dereferenceExpr($this->class) . '::' . $name . '(...)';
 	}
 
 
