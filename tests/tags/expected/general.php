@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Latte\Runtime as LR;
 
 /** source: %A% */

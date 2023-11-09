@@ -44,7 +44,7 @@ class Engine
 	private string $contentType = ContentType::Html;
 	private ?string $tempDirectory = null;
 	private bool $autoRefresh = true;
-	private bool $strictTypes = false;
+	private bool $strictTypes = true;
 	private bool $strictParsing = false;
 	private ?Policy $policy = null;
 	private bool $sandboxed = false;
