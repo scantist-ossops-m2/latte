@@ -592,16 +592,6 @@ class Engine
 			if ($method->getAttributes(Attributes\TemplateFunction::class)) {
 				$this->addFunction($method->name, [$params, $method->name]);
 			}
-
-			if (strpos((string) $method->getDocComment(), '@filter')) {
-				trigger_error('Annotation @filter is deprecated, use attribute #[Latte\Attributes\TemplateFilter]', E_USER_DEPRECATED);
-				$this->addFilter($method->name, [$params, $method->name]);
-			}
-
-			if (strpos((string) $method->getDocComment(), '@function')) {
-				trigger_error('Annotation @function is deprecated, use attribute #[Latte\Attributes\TemplateFunction]', E_USER_DEPRECATED);
-				$this->addFunction($method->name, [$params, $method->name]);
-			}
 		}
 
 		return array_filter((array) $params, fn($key) => $key[0] !== "\0", ARRAY_FILTER_USE_KEY);

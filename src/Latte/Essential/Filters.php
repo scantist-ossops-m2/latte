@@ -187,11 +187,6 @@ final class Filters
 			$time = new \DateTime($time);
 		}
 
-		if (str_contains($format, '%')) {
-			trigger_error("Function strftime() used by filter |date is deprecated since PHP 8.1, use format without % characters like 'Y-m-d'.", E_USER_DEPRECATED);
-			return @strftime($format, $time->format('U') + 0);
-		}
-
 		return $time->format($format);
 	}
 
@@ -270,7 +265,7 @@ final class Filters
 	public static function breaklines(string|Stringable|null $s): Html
 	{
 		$s = htmlspecialchars((string) $s, ENT_NOQUOTES | ENT_SUBSTITUTE, 'UTF-8');
-		return new Html(nl2br($s, Latte\Runtime\Filters::$xml));
+		return new Html(nl2br($s, false));
 	}
 
 
