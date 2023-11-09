@@ -33,7 +33,7 @@ final class TranslatorExtension extends Latte\Extension
 	) {
 		$this->translator = $translator;
 		if ($translator instanceof Translator) {
-			$this->translator = [$translator, 'translate'];
+			$this->translator = $translator->translate(...);
 		}
 	}
 
@@ -41,7 +41,7 @@ final class TranslatorExtension extends Latte\Extension
 	public function getTags(): array
 	{
 		return [
-			'_' => [$this, 'parseTranslate'],
+			'_' => $this->parseTranslate(...),
 			'translate' => fn(Tag $tag) => yield from Nodes\TranslateNode::create($tag, $this->key ? $this->translator : null),
 		];
 	}
@@ -66,7 +66,7 @@ final class TranslatorExtension extends Latte\Extension
 	/**
 	 * {_ ...}
 	 */
-	public function parseTranslate(Tag $tag): PrintNode
+	private function parseTranslate(Tag $tag): PrintNode
 	{
 		$tag->outputMode = $tag::OutputKeepIndentation;
 		$tag->expectArguments();
