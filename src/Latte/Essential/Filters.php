@@ -449,14 +449,27 @@ final class Filters
 
 
 	/**
-	 * Sorts an array.
-	 * @param  mixed[]  $array
-	 * @return mixed[]
+	 * Sorts elements using the comparison function and preserves the key association.
 	 */
-	public static function sort(array $array, ?\Closure $callback = null): array
+	public static function sort(iterable $iterable, ?\Closure $comparison = null): iterable
 	{
-		$callback ? uasort($array, $callback) : asort($array);
-		return $array;
+		if (is_array($iterable)) {
+			$comparison ? uasort($iterable, $comparison) : asort($iterable);
+			return $iterable;
+		}
+
+		$keys = $values = [];
+		foreach ($iterable as $key => $value) {
+			$keys[] = $key;
+			$values[] = $value;
+		}
+		$comparison ? uasort($values, $comparison) : asort($values);
+
+		return (static function () use ($keys, $values): \Generator {
+			foreach ($values as $i => $value) {
+				yield $keys[$i] => $value;
+			}
+		})();
 	}
 
 
