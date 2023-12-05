@@ -474,6 +474,38 @@ final class Filters
 
 
 	/**
+	 * Groups elements by the element indices and preserves the key association and order.
+	 */
+	public static function group(iterable $iterable, string|int|\Closure $by): \Generator
+	{
+		$fn = $by instanceof \Closure ? $by : fn($a) => is_array($a) ? $a[$by] : $a->$by;
+		$keys = $groups = $prevKey = [];
+
+		foreach ($iterable as $k => $v) {
+			$groupKey = $fn($v, $k);
+			if (!$groups || $prevKey !== $groupKey) {
+				$index = array_search($groupKey, $keys, true);
+				if ($index === false) {
+					$index = count($keys);
+					$keys[$index] = $groupKey;
+				}
+				$prevKey = $groupKey;
+			}
+			$groups[$index][0][] = $k;
+			$groups[$index][1][] = $v;
+		}
+
+		foreach ($groups as $index => $pair) {
+			yield $keys[$index] => (static function () use ($pair): \Generator {
+				foreach ($pair[1] as $i => $value) {
+					yield $pair[0][$i] => $value;
+				}
+			})();
+		}
+	}
+
+
+	/**
 	 * Returns value clamped to the inclusive range of min and max.
 	 */
 	public static function clamp(int|float $value, int|float $min, int|float $max): int|float
